@@ -82,6 +82,22 @@ function Fetch-EEAMCABillingAccounts{
     
 }
 
+function Test-DoesUserHaveRootLevelAccess{
+    #check if logged in user has access as requested in the readme
+    $tenant = Get-AzTenant | select -ExpandProperty id 
+
+    $user = get-azcontext | select -ExpandProperty Account | select -ExpandProperty Id
+    $roles = Get-AzRoleAssignment -scope "/providers/Microsoft.Management/managementGroups/$tenant" -SignInName $user
+    $accessTest = $false
+    foreach($role in $roles){
+        #check if user has role Owner or user access administrator
+        if($role.RoleDefinitionID -contains '8e3af657-a8ff-443c-a75c-2fe8c4bcb635' -or $role.RoleDefinitionID -contains '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'){
+            $accessTest = $true
+        }
+    }
+
+    return $accessTest
+}
 
 #CHECK PS MODULE PREREQUISITES
 Write-Host "Checking PowerShell module prerequisites..."
@@ -149,6 +165,14 @@ $CarbonOptimizationRoleAssignment = "fa0d39e6-28e5-40cf-8521-1eb320653a4c" # "Ca
 Login-AzAccount -WarningAction SilentlyContinue
 
 Write-Host "Authentication Success" -ForegroundColor Green
+
+$accessTest = Test-DoesUserHaveRootLevelAccess
+
+if(-not $accessTest){
+    Write-Host "Logged in user does not have user access permissions to the root level management group `r`n please check  Role Required chapter of the readme." -ForegroundColor Red
+    $check = Read-host "If This is an error and user does have root level access write 'Understood' to continue. Else program will exit"
+    if(-not $check -like '*stood*'){Exit}
+}
 
 # Prepare empty list for information about tenants and secrets
 $tenantInfo = @()
