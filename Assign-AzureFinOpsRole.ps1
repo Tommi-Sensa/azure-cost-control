@@ -83,7 +83,8 @@ function Fetch-EEAMCABillingAccounts{
 }
 
 function Test-DoesUserHaveRootLevelAccess{
-    #check if logged in user has access as requested in the readme
+    try{
+            #check if logged in user has access as requested in the readme
     $tenant = Get-AzTenant | select -ExpandProperty id 
 
     $user = get-azcontext | select -ExpandProperty Account | select -ExpandProperty Id
@@ -97,6 +98,11 @@ function Test-DoesUserHaveRootLevelAccess{
     }
 
     return $accessTest
+    } catch {
+        Write-Host "Unable to verify Root level access to tenant resources"
+        return $false
+    }
+
 }
 
 #CHECK PS MODULE PREREQUISITES
