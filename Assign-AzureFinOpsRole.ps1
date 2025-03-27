@@ -169,7 +169,7 @@ $CarbonOptimizationRoleAssignment = "fa0d39e6-28e5-40cf-8521-1eb320653a4c" # "Ca
 #//  Login to Azure
 #//------------------------------------------------------------------------------------
 Login-AzAccount -WarningAction SilentlyContinue
-
+$azToken = [System.Net.NetworkCredential]::new('', ((Get-AzAccessToken -AsSecureString).token)).Password
 Write-Host "Authentication Success" -ForegroundColor Green
 
 $accessTest = Test-DoesUserHaveRootLevelAccess
@@ -384,7 +384,7 @@ if ($tenant) {
             #//------------------------------------------------------------------------------------
             #//                           Assign Enrollment Reader to SPN
             #//------------------------------------------------------------------------------------
-            $token = (Get-AzAccessToken).token
+            $token = $azToken
             $url = "https://management.azure.com/providers/Microsoft.Billing/billingAccounts/$enrolmentId/billingRoleAssignments/24f8edb6-1668-4659-b5e2-40bb5f3a7d7e?api-version=2019-10-01-preview"
             $headers = @{'Authorization' = "Bearer $token" }
             $contentType = "application/json"
@@ -399,7 +399,7 @@ if ($tenant) {
             Invoke-WebRequest -Method PUT -Uri $url -ContentType $contentType -Headers $headers -Body $json
         }
         if ($agreementType -eq "MCA") {
-            $token = (Get-AzAccessToken).token
+            $token = $azToken
             $url = "https://management.azure.com/providers/Microsoft.Billing/billingAccounts/$enrolmentId/createBillingRoleAssignment?api-version=2019-10-01-preview"
             $headers = @{'Authorization' = "Bearer $token" }
             $contentType = "application/json"
