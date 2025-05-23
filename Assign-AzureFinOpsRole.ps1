@@ -144,7 +144,15 @@ $ReservationRoleAssignment = "Reservations Reader"
 $SavingsPlanRoleAssignment = "Reader"
 $CarbonOptimizationRoleAssignment = "fa0d39e6-28e5-40cf-8521-1eb320653a4c" # "Carbon Optimization Reader"
 
+#//------------------------------------------------------------------------------------
+#//  Double check that no active session for Graph and Azure
+#//------------------------------------------------------------------------------------
 
+Write-Host "Logging out of all sessions of Graph API and Azure"
+Disconnect-AzAccount -ErrorAction SilentlyContinue | out-null
+Disconnect-MgGraph -ErrorAction SilentlyContinue | out-null
+Disconnect-Graph -ErrorAction SilentlyContinue | out-null
+Start-Sleep -Seconds 2
 #//------------------------------------------------------------------------------------
 #//  Login to Azure
 #//------------------------------------------------------------------------------------
@@ -209,7 +217,7 @@ $RootTenantID = $tenantRootMG.TenantId
 #//                              Connect to Microsoft Graph
 #//------------------------------------------------------------------------------------
 # Connect to Microsoft Graph with required permissions
-Connect-MgGraph -TenantId $RootTenantID -Scopes "Application.ReadWrite.All", "Directory.Read.All"
+Connect-MgGraph -TenantId $RootTenantID -Scopes "Application.ReadWrite.All", "Directory.Read.All" -UseDeviceCode
 
 #//------------------------------------------------------------------------------------
 #//  List Agreement Types
@@ -655,5 +663,6 @@ foreach ($tenantObject in $tenantInfo) {
 #//                                     DISCONNECT
 #//------------------------------------------------------------------------------------
 Write-Host "Disconnecting..."
-Disconnect-AzAccount > $null
-Disconnect-MgGraph > $null
+Disconnect-AzAccount -ErrorAction SilentlyContinue | out-null
+Disconnect-MgGraph -ErrorAction SilentlyContinue | out-null
+Disconnect-Graph -ErrorAction SilentlyContinue | out-null
