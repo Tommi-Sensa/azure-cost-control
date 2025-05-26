@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 1.0.5
+.VERSION 1.0.7
 
 .AUTHOR Claus Sonderstrup and Suman Bhushal, Crayon. http://www.crayon.com
 
@@ -86,26 +86,6 @@ function Fetch-EEAMCABillingAccounts {
     
 }
 
-
-#CHECK PS MODULE PREREQUISITES
-Write-Host "Checking PowerShell module prerequisites..."
-
-#//------------------------------------------------------------------------------------
-#//  Install Modules If Needed
-#//------------------------------------------------------------------------------------
-Install-Module-If-Needed Az.Accounts
-Install-Module-If-Needed Az.Reservations
-Install-Module-If-Needed Az.BillingBenefits
-Install-Module-If-Needed Az.Resources
-Install-Module-If-Needed Az.Billing
-Install-Module-If-Needed Microsoft.Graph.Authentication
-Install-Module-If-Needed Microsoft.Graph.Applications
-Install-Module-If-Needed Microsoft.Graph.Identity.DirectoryManagement
-
-#//------------------------------------------------------------------------------------
-#//  Import the modules into the session
-#//------------------------------------------------------------------------------------
-
 function Import-Modules {
     param (
         [string[]]$moduleNames
@@ -131,6 +111,27 @@ function Import-Modules {
         }
     }
 }
+
+#CHECK PS MODULE PREREQUISITES
+Write-Host "Checking PowerShell module prerequisites..."
+
+#//------------------------------------------------------------------------------------
+#//  Install Modules If Needed
+#//------------------------------------------------------------------------------------
+Install-Module-If-Needed Az.Accounts
+Install-Module-If-Needed Az.Reservations
+Install-Module-If-Needed Az.BillingBenefits
+Install-Module-If-Needed Az.Resources
+Install-Module-If-Needed Az.Billing
+Install-Module-If-Needed Microsoft.Graph.Authentication
+Install-Module-If-Needed Microsoft.Graph.Applications
+Install-Module-If-Needed Microsoft.Graph.Identity.DirectoryManagement
+
+#//------------------------------------------------------------------------------------
+#//  Import the modules into the session
+#//------------------------------------------------------------------------------------
+
+
 
 # List of modules to check and import
 $modules = @("Az.Accounts", "Az.Reservations", "Az.BillingBenefits", "Az.Resources", "Az.Billing", "Microsoft.Graph.Authentication", "Microsoft.Graph.Applications", "Microsoft.Graph.Identity.DirectoryManagement")
