@@ -15,6 +15,7 @@ Change Log:
 1.0.4 - Updated to use Microsoft Graph PowerShell SDK instead of deprecated AzureAD modules. Changed login method to use DeviceCode flow for better compatibility, and added error handling for module installation and import.
 1.0.5 - Updated Get-AzAccessToken calls to use -AsSecureString:$false to prepare for Az version 14.0.0 breaking changes
 1.0.6 - Fixed Service Principal propagation time issue that could happen at some environments by increasing wait time after creating the Service Principal.
+1.0.7 - Fixed Device Code Auth not working properly when fetching applications and removed large IF condition scope instead use a exit condition.
 #>
 # Requires -Modules Az
 $ErrorActionPreference = "stop"
@@ -239,6 +240,7 @@ switch ($choice) {
     3 { $agreementType = "CSP" }
     default {
         Write-Host "Invalid choice. Please enter a valid number (1, 2, or 3)." -ForegroundColor Red
+        Read-Host "Press enter to exit"
         exit
     }
 }
@@ -291,6 +293,7 @@ $app = Get-MgApplication -Filter "DisplayName eq '$appName'"
 if ($app) {
     # Stop the script with a bold red text message
     Write-Host -ForegroundColor Red -BackgroundColor Black "`nPlease remove all CrayonCloudEconomicsReader App Registration in Azure and run the script again`n"
+    Read-Host "Press enter to exit"
     exit
 }
 else {
